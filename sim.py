@@ -3,68 +3,9 @@ import mujoco.viewer
 import time
 import numpy as np
 import os
-
+import xml.etree.ElementTree as ET
 # XML modificado para que qpos = 0 coincida con la postura de la foto
-robot_xml = """
-<mujoco model="niryo_ned2_con_garra">
-    <compiler angle="radian" coordinate="local"/>
-    <option gravity="0 0 0"/>
-
-    <asset>
-        <texture name="grid" type="2d" builtin="checker" rgb1=".1 .2 .3" rgb2=".2 .3 .4" width="512" height="512"/>
-        <material name="grid" texture="grid" texrepeat="1 1" texuniform="true"/>
-    </asset>
-
-    <worldbody>
-        <light pos="0 0 3" dir="0 0 -1" directional="true"/>
-        <geom name="floor" size="0 0 .05" type="plane" material="grid"/>
-
-        <body name="base_link" pos="0 0 0">
-            <geom name="base_geom" type="cylinder" size="0.08 0.05" pos="0 0 0.05" rgba="0.1 0.5 0.8 1"/>
-            
-            <body name="shoulder_link" pos="0 0 0.103">
-                <joint name="joint_1" type="hinge" axis="0 0 1" range="-2.949 2.949"/>
-                <geom type="cylinder" size="0.05 0.04" pos="0 0 0.04" rgba="0.2 0.2 0.2 1"/>
-                
-                <body name="arm_link" pos="0 0 0.08">
-                    <joint name="joint_2" type="hinge" axis="0 -1 0" range="-1.83 0.61"/>
-                    <geom type="capsule" size="0.035" fromto="0 0 0 0 0 0.221" rgba="0.1 0.5 0.8 1"/>
-                    
-                    <body name="forearm_link" pos="0 0 0.221">
-                        <joint name="joint_3" type="hinge" axis="0 -1 0" range="-2.68 3.14"/>
-                        <geom type="capsule" size="0.03" fromto="0 0 0 0.201 0 0" rgba="0.2 0.2 0.2 1"/>
-                        
-                        <body name="wrist_link" pos="0.201 0 0">
-                            <joint name="joint_4" type="hinge" axis="1 0 0" range="-2.089 2.089"/>
-                            <geom type="capsule" size="0.025" fromto="0 0 0 0.06 0 0" rgba="0.1 0.5 0.8 1"/>
-                            
-                            <body name="wrist_flex_link" pos="0.06 0 0">
-                                <joint name="joint_5" type="hinge" axis="0 -1 0" range="-1.919 1.922"/>
-                                <geom type="cylinder" size="0.025 0.015" quat="0.7071 0 0.7071 0" rgba="0.2 0.2 0.2 1"/>
-                                
-                                <body name="tool_link" pos="0.04 0 0">
-                                    <joint name="joint_6" type="hinge" axis="1 0 0" range="-2.53 2.53"/>
-                                    <geom type="box" size="0.015 0.035 0.02" rgba="0.1 0.1 0.1 1"/>
-                                    
-                                    <body name="left_finger" pos="0.015 0.025 0">
-                                        <joint name="joint_base_to_left_finger" type="slide" axis="0 -1 0" range="0 0.02"/>
-                                        <geom type="box" size="0.02 0.005 0.01" pos="0.01 0 0" rgba="0.9 0.1 0.1 1"/>
-                                    </body>
-
-                                    <body name="right_finger" pos="0.015 -0.025 0">
-                                        <joint name="joint_base_to_right_finger" type="slide" axis="0 1 0" range="0 0.02"/>
-                                        <geom type="box" size="0.02 0.005 0.01" pos="0.01 0 0" rgba="0.9 0.1 0.1 1"/>
-                                    </body>
-                                </body>
-                            </body>
-                        </body>
-                    </body>
-                </body>
-            </body>
-        </body>
-    </worldbody>
-</mujoco>
-"""
+robot_xml = ET.tostring(ET.fromstring(open("niryo.xml").read()), encoding="utf8")
 
 FILENAME = "cmd_joints.txt"
 
