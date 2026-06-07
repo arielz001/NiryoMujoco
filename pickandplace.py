@@ -2,58 +2,60 @@ import tkinter as tk
 from tkinter import ttk
 import numpy as np
 
-# --- 1. CONFIGURACIÓN DEL GEMELO DIGITAL ---
+# --- 1. DIGITAL TWIN CONFIGURATION ---
 FILENAME = "cmd_joints.txt"
 
-# Límites de movimiento de las articulaciones (en grados)
+# Joint movement limits (in degrees)
 JOINT_RANGES = [
     (-90, 90), (-50, 30), (-50, 120), (-90, 90), (-80, 80), (-50, 50)
 ]
 
-# --- 2. SECUENCIA PICK AND PLACE CORREGIDA (Pick en -90° y Place en 90°) ---
-# Formato de cada pose: [J1, J2, J3, J4, J5, J6, Garra]
+# --- 2. CORRECTED PICK AND PLACE SEQUENCE (Pick at -90° and Place at 90°) ---
+# Pose format: [J1, J2, J3, J4, J5, J6, Gripper]
 SECUENCIA = [
-    {"desc": "1. Posición de Reposo / Inicio", "pose": [0, 29, -72, 0, 0, 0, 0.020]},
+    {"desc": "1. Home / Idle Position", "pose": [0, 29, -72, 0, 0, 0, 0.0]},
     
-    # --- FASE DE ACERCARSE AL OBJETO EN -90° ---
-    {"desc": "2. Girar a la zona de Pick (-90°)", "pose": [-90, 29, -72, 0, 0, 0, 0.020]},
-    {"desc": "3. Bajar a buscar el objeto en -90°", "pose": [-90, 25, -55, 0, 0, 0, 0.020]},
-    {"desc": "4. ¡Cerrar Pinza! (Pick)", "pose": [-90, -22, -50, 0, 0, 0, 0.002]},
+    # --- APPROACH PHASE TO OBJECT AT -90° ---
+    {"desc": "2. Rotate to Pick Zone (-90°)", "pose": [-90, 29, -72, 0, 0, 0, 0.0]},
+    {"desc": "3. Lower to Find Object at -90°", "pose": [-90, 25, -55, 0, 0, 0, 0.0]},
+    {"desc": "4. Close Gripper! (Pick)", "pose": [-90, -22, -50, 0, 0, 0, 0.00]},
+    {"desc": "5. Close Gripper! (Pick)", "pose": [-90, -22, -50, 0, 0, 0, 0.02]},
     
-    # --- FASE DE SUBIDA (Elevación de seguridad en -90°) ---
-    {"desc": "5. Alzar el brazo verticalmente con el objeto", "pose": [-90, 30, -26, 0, 0, 0, 0.002]},
+    # --- LIFT PHASE (Safety elevation at -90°) ---
+    {"desc": "6. Lift Arm Vertically with Object", "pose": [-90, 30, -26, 0, 0, 0, 0.02]},
     
-    # --- GRAN TRÁNSITO POR EL AIRE HASTA LOS 90° (Cruza fluido y alto) ---
-    {"desc": "6. Viajar alto por el aire de -90° a 90°", "pose": [90, 30, -26, 0, 0, 0, 0.002]},
+    # --- FLUID AIR TRANSIT TO 90° (Smooth and high cross) ---
+    {"desc": "7. Travel High Through Air from -90° to 90°", "pose": [90, 30, -26, 0, 0, 0, 0.02]},
     
-    # --- FASE DE DESCARGA EN 90° ---
-    {"desc": "7. Descender sobre la zona de entrega en 90°", "pose": [90, -36, -30, 0, 0, 0, 0.020]},
-    {"desc": "8. ¡Abrir Pinza! (Place)", "pose": [90, -36, -30, 0, 0, 0, 0.020]},
+    # --- DROP PHASE AT 90° ---
+    {"desc": "8. Descend over Delivery Zone at 90°", "pose": [90, -36, -30, 0, 0, 0, 0.02]},
+    {"desc": "9. Open Gripper! (Place)", "pose": [90, -36, -30, 0, 0, 0, 0.0]},
     
-    # --- RETIRO Y RETORNO ---
-    {"desc": "9. Subir y despejar la zona", "pose": [90, 30, -26, 0, 0, 0, 0.002]},
-    {"desc": "10. Regresar a Inicio", "pose": [0, 29, -72, 0, 0, 0, 0.020]}
+    # --- RETRACT AND RETURN ---
+    {"desc": "10. Raise and Clear Zone", "pose": [90, 30, -26, 0, 0, 0, 0.0]},
+    {"desc": "11. Return Home", "pose": [0, 29, -72, 0, 0, 0, 0.0]}
 ]
-# --- 3. CREACIÓN DE LA INTERFAZ GRÁFICA ---
+
+# --- 3. GUI CREATION ---
 root = tk.Tk()
-root.title("Panel Control - Niryo Ned2 FLUIDO")
+root.title("Control Panel - Niryo Ned2 SMOOTH")
 root.geometry("480x600")
 root.configure(bg='#222222')
 
 style = ttk.Style()
 style.configure("TLabel", foreground="white", background="#222222", font=("Arial", 11))
 
-title_lbl = ttk.Label(root, text="Niryo Ned2 - Trayectoria Fluida", font=("Arial", 14, "bold"))
+title_lbl = ttk.Label(root, text="Niryo Ned2 - Smooth Trajectory", font=("Arial", 14, "bold"))
 title_lbl.pack(pady=15)
 
-status_lbl = ttk.Label(root, text="Estado: Esperando comando...", font=("Arial", 11, "italic"), foreground="#00FF00")
+status_lbl = ttk.Label(root, text="Status: Waiting for command...", font=("Arial", 11, "italic"), foreground="#00FF00")
 status_lbl.pack(pady=5)
 
 sliders = []
 label_values = []
 
 def send_to_txt(*args):
-    """Convierte las posiciones actuales a radianes y escribe en el archivo"""
+    """Convert current positions to radians and write to file"""
     rad_vals = []
     for i in range(6):
         deg = sliders[i].get()
@@ -71,32 +73,32 @@ def send_to_txt(*args):
     except Exception as e:
         pass
 
-# --- 4. MOTOR DE INTERPOLACIÓN FLUIDA ---
-# Variables de control de trayectoria
+# --- 4. SMOOTH INTERPOLATION ENGINE ---
+# Trajectory control variables
 paso_secuencia_actual = 0
 sub_paso_actual = 0
-total_sub_pasos = 60  # Cuantos fragmentos intermedios hay por movimiento (60 pasos = 1.2 segundos fluidos)
+total_sub_pasos = 60  # Intermediate steps per movement (60 steps = 1.2 smooth seconds)
 pose_inicial_tramo = []
 
 def interpolar_movimiento():
     global sub_paso_actual, paso_secuencia_actual, pose_inicial_tramo
     
     if paso_secuencia_actual >= len(SECUENCIA):
-        status_lbl.config(text="Estado: ¡Rutina Pick & Place Finalizada con éxito!", foreground="#00FF00")
+        status_lbl.config(text="Status: Pick & Place Routine Completed Successfully!", foreground="#00FF00")
         btn_start.config(state="normal")
         return
 
     pose_objetivo = SECUENCIA[paso_secuencia_actual]["pose"]
     
-    # Si estamos empezando un tramo nuevo, guardamos la foto de dónde venía el robot
+    # Store initial state when starting a new segment
     if sub_paso_actual == 0:
         pose_inicial_tramo = [sliders[i].get() for i in range(6)] + [slider_g.get()]
-        status_lbl.config(text=f"Ejecutando: {SECUENCIA[paso_secuencia_actual]['desc']}", foreground="#FFCC00")
+        status_lbl.config(text=f"Executing: {SECUENCIA[paso_secuencia_actual]['desc']}", foreground="#FFCC00")
 
-    # Calcular el porcentaje de avance actual (de 0.0 a 1.0)
+    # Calculate current progress percentage (0.0 to 1.0)
     t = sub_paso_actual / total_sub_pasos
     
-    # Avanzar un milímetro cada articulación
+    # Step each joint slightly
     for i in range(6):
         val_interpolado = pose_inicial_tramo[i] + (pose_objetivo[i] - pose_inicial_tramo[i]) * t
         sliders[i].set(val_interpolado)
@@ -104,19 +106,19 @@ def interpolar_movimiento():
     val_garra_interpolado = pose_inicial_tramo[6] + (pose_objetivo[6] - pose_inicial_tramo[6]) * t
     slider_g.set(val_garra_interpolado)
     
-    # Escribir la coordenada milimétrica en el archivo
+    # Write coordinates to file
     send_to_txt()
     
     sub_paso_actual += 1
     
     if sub_paso_actual <= total_sub_pasos:
-        # Repetir este ajuste en 20 milisegundos (Da una tasa de refresco de 50 FPS, ultra fluido)
+        # Refresh in 20 milliseconds (50 FPS refresh rate, ultra smooth)
         root.after(20, interpolar_movimiento)
     else:
-        # Tramo terminado, saltamos al siguiente punto clave de la secuencia
+        # Segment finished, advance to next keypoint
         sub_paso_actual = 0
         paso_secuencia_actual += 1
-        # Pequeña pausa estática de 400ms al llegar al destino (útil para que la pinza agarre bien)
+        # Short 400ms static pause at destination for stable grip/release
         root.after(400, interpolar_movimiento)
 
 def comenzar_rutina():
@@ -127,7 +129,7 @@ def comenzar_rutina():
     interpolar_movimiento()
 
 
-# --- 5. ENLACE DE SLIDERS EN LA INTERFAZ ---
+# --- 5. BIND SLIDERS IN THE INTERFACE ---
 joint_names = ["Joint 1", "Joint 2", "Joint 3", "Joint 4", "Joint 5", "Joint 6"]
 for i in range(6):
     frame = tk.Frame(root, bg='#222222', pady=5)
@@ -138,7 +140,7 @@ for i in range(6):
     
     slider = tk.Scale(frame, from_=JOINT_RANGES[i][0], to=JOINT_RANGES[i][1], orient='horizontal', 
                       bg='#333333', fg='white', highlightbackground='#222222',
-                      troughcolor='#555555', command=send_to_txt, resolution=0.1) # Habilitamos decimales para fluidez
+                      troughcolor='#555555', command=send_to_txt, resolution=0.1) # Enable decimals for smoothness
     slider.set(SECUENCIA[0]["pose"][i])  
     slider.pack(side='left', fill='x', expand=True, padx=10)
     sliders.append(slider)
@@ -147,10 +149,10 @@ for i in range(6):
     val_lbl.pack(side='right')
     label_values.append(val_lbl)
 
-# Slider Garra
+# Gripper Slider
 frame_g = tk.Frame(root, bg='#222222', pady=10)
 frame_g.pack(fill='x', padx=20)
-lbl_g = ttk.Label(frame_g, text="Garra 1", width=10)
+lbl_g = ttk.Label(frame_g, text="Gripper 1", width=10)
 lbl_g.pack(side='left')
 
 slider_g = tk.Scale(frame_g, from_=0.0, to=0.02, resolution=0.0005, orient='horizontal', 
@@ -162,8 +164,8 @@ slider_g.pack(side='left', fill='x', expand=True, padx=10)
 val_lbl_g = ttk.Label(frame_g, text=f"{SECUENCIA[0]['pose'][6]:.3f}", width=6)
 val_lbl_g.pack(side='right')
 
-# --- 6. BOTÓN RUTA AUTOMÁTICA ---
-btn_start = tk.Button(root, text="▶ INICIAR RUTINA FLUIDA", font=("Arial", 12, "bold"),
+# --- 6. AUTOMATIC ROUTINE BUTTON ---
+btn_start = tk.Button(root, text="▶ START SMOOTH ROUTINE", font=("Arial", 12, "bold"),
                       bg="#00AA55", fg="white", activebackground="#008844", activeforeground="white",
                       bd=0, padx=10, pady=10, command=comenzar_rutina)
 btn_start.pack(pady=25)
