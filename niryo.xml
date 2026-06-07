@@ -45,7 +45,7 @@
                                 <geom type="mesh" mesh="mesh_hand" pos="0 0 0" rgba="0.2 0.2 0.2 1"/>
                                 
                                 <body name="tool_link" pos="0.0455 0.001 0.0025">
-                                    <joint name="joint_6" type="hinge" axis="1 0 0" pos="0 0 0" range="-2.53 2.53"/>
+                                    <joint name="joint_6" type="hinge" axis="1 0 0" pos="0 0 0" range="0 0"/>
                                     <geom type="mesh" mesh="mesh_gripper_body" pos="0 0 0" rgba="0.1 0.1 0.1 1"/>
                                     
                                     <body name="left_finger" pos="0.015 0.025 0">

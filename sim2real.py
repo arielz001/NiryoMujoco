@@ -26,12 +26,12 @@ except Exception as e:
 # --- 2. CONFIGURACIÓN DE LÍMITES EN GRADOS NATIVOS ---
 # Volvemos a los rangos estándar para la UI y el Hardware
 JOINT_RANGES = [
-    (-90, 90),     # J1
-    (-50, 30),     # J2
-    (-120, 120),   # J3
-    (-120, 120),   # J4
-    (-110, 110),   # J5
-    (-145, 145)    # J6
+    (-90, 90),    # J1
+    (-50, 30),    # J2
+    (-50, 120),  # J3
+    (-90, 90),    # J4
+    (-80, 80),    # J5
+    (-50, 50)     # J6
 ]
 
 initial_pose_deg = list(FALLBACK_POSE_DEG)
@@ -68,7 +68,7 @@ def send_to_txt(*args):
         label_values[i].config(text=f"{int(deg)}°")
         ui_rad_vals.append(np.radians(deg))
     
-    # 🔄 CRUCIAL: Intercambiamos J4 (índice 3) y J5 (índice 4) EXCLUSIVAMENTE para el TXT de MuJoCo
+    # CRUCIAL: Intercambiamos J4 (índice 3) y J5 (índice 4) EXCLUSIVAMENTE para el TXT de MuJoCo
     mujoco_joints_rad = [
         ui_rad_vals[0],
         ui_rad_vals[1],
