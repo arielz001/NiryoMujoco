@@ -6,15 +6,15 @@
         <texture name="grid" type="2d" builtin="checker" rgb1=".1 .2 .3" rgb2=".2 .3 .4" width="512" height="512"/>
         <material name="grid" texture="grid" texrepeat="1 1" texuniform="true"/>
         
-        <mesh name="mesh_base" file="STL2_CENTRADOS/1base.stl" scale="0.001 0.001 0.001"/>
-        <mesh name="mesh_shoulder" file="STL2_CENTRADOS/2shoulder.stl" scale="0.001 0.001 0.001"/>
-        <mesh name="mesh_arm" file="STL2_CENTRADOS/3arm.stl" scale="0.001 0.001 0.001"/>
-        <mesh name="mesh_elbow" file="STL2_CENTRADOS/4elbow.stl" scale="0.001 0.001 0.001"/>
-        <mesh name="mesh_forearm" file="STL2_CENTRADOS/5forearm.stl" scale="0.001 0.001 0.001"/>
-        <mesh name="mesh_wrist" file="STL2_CENTRADOS/6wrist.stl" scale="0.001 0.001 0.001"/>
-        <mesh name="mesh_hand" file="STL2_CENTRADOS/7arm.stl" scale="0.001 0.001 0.001"/>
-        <mesh name="mesh_gripper_body" file="STL2_CENTRADOS/11grippier.stl" scale="0.001 0.001 0.001"/>
-        <mesh name="mesh_gripper_finger" file="STL2_CENTRADOS/morsgrippier.stl" scale="0.001 0.001 0.001"/>
+        <mesh name="mesh_base" file="stl/1base.stl" scale="0.001 0.001 0.001"/>
+        <mesh name="mesh_shoulder" file="stl/2shoulder.stl" scale="0.001 0.001 0.001"/>
+        <mesh name="mesh_arm" file="stl/3arm.stl" scale="0.001 0.001 0.001"/>
+        <mesh name="mesh_elbow" file="stl/4elbow.stl" scale="0.001 0.001 0.001"/>
+        <mesh name="mesh_forearm" file="stl/5forearm.stl" scale="0.001 0.001 0.001"/>
+        <mesh name="mesh_wrist" file="stl/6wrist.stl" scale="0.001 0.001 0.001"/>
+        <mesh name="mesh_hand" file="stl/7arm.stl" scale="0.001 0.001 0.001"/>
+        <mesh name="mesh_gripper_body" file="stl/11grippier.stl" scale="0.001 0.001 0.001"/>
+        <mesh name="mesh_gripper_finger" file="stl/morsgrippier.stl" scale="0.001 0.001 0.001"/>
     </asset>
 
     <worldbody>
