@@ -4,20 +4,22 @@ import time
 import numpy as np
 import os
 import xml.etree.ElementTree as ET
-# XML modificado para que qpos = 0 coincida con la postura de la foto
+
+# Modified XML so that qpos = 0 matches the reference photo posture
 robot_xml = ET.tostring(ET.fromstring(open("niryo.xml").read()), encoding="utf8")
 
 FILENAME = "cmd_joints.txt"
 
-# Forzar a que el archivo inicialice en 0 para comprobar la postura
+# Force the file to initialize at 0 for joints and OPEN (0.020) for the gripper
 if not os.path.exists(FILENAME):
     with open(FILENAME, "w") as f:
-        f.write("0.0,0.0,0.0,0.0,0.0,0.0,0.010")
+        f.write("0.0,0.0,0.0,0.0,0.0,0.0,0.020")
 
 model = mujoco.MjModel.from_xml_string(robot_xml)
 data = mujoco.MjData(model)
 
-print("-> Iniciando simulación. Modifica 'cmd_joints.txt' con ceros para ver la posición fija.")
+print("-> Starting simulation in MuJoCo.")
+print("-> Synchronized with panel BUTTONS (Open = 0.020 / Close = 0.000).")
 
 with mujoco.viewer.launch_passive(model, data) as viewer:
     viewer.cam.distance = 1.3
@@ -34,9 +36,15 @@ with mujoco.viewer.launch_passive(model, data) as viewer:
                 if line:
                     values = [float(x) for x in line.split(",")]
                     if len(values) == 7:
+                        # 1. Position the 6 arm joints (indices 0 to 5)
                         data.qpos[:6] = values[:6]
-                        data.qpos[6] = values[6]
-                        data.qpos[7] = values[6]
+                        
+                        # 2. Take the seventh value controlled by the UI panel buttons
+                        garra_val = values[6]
+                        
+                        # Assign the value directly to both gripper fingers in MuJoCo
+                        data.qpos[6] = garra_val  # Left finger
+                        data.qpos[7] = garra_val  # Right finger
         except Exception:
             pass
 
