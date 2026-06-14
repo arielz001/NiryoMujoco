@@ -2,7 +2,7 @@
 
 
 #### This project provides a complete **Digital Twin and Hardware Control ecosystem** for the **Niryo Ned2** robotic arm. It bridges the gap between visual simulation inside **MuJoCo** and real-world physical execution using the `pyniryo` API, enabling standalone simulation, live interactive testing, and automated pick-and-place routines. The stl files used in this project are from the [Niryo Ned2 GitHub repository](https://github.com/NiryoRobotics/ned2).
-This works in macos and linux environments, but has not been tested on Windows.
+
 ---
 
 ## 🛠️ Project Structure & Component Overview
