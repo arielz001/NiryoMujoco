@@ -61,16 +61,22 @@ To command the physical Niryo Ned2 robot while seeing it mirrored simultaneously
 
 
 3. **Run the tracking application dashboards (In a separate terminal session):**
+
+   ![Sim2Real Dashboard](assets/sim2real.png)
+
    * For interactive real-time visual mirroring and manual adjustments:
      ```bash
      python sim2realSliders.py
      ```
+
+    A visualization of this mode is shown in the following gif:
+    
+    ![Sim2Real GIF](assets/sim2real.gif)
+
    * For synchronized execution of the physical pick-and-place sequence:
      ```bash
      python pickandplaceReal.py
      ```
-
----
 
 ## 🔒 Safety & System Defaults
 
