@@ -1,7 +1,7 @@
 # Unified Control Framework for Niryo Ned2 in Mujoco: Digital Twin & Real Hardware
 
 
-#### This project provides a complete **Digital Twin and Hardware Control ecosystem** for the **Niryo Ned2** robotic arm. It bridges the gap between visual simulation inside **MuJoCo** and real-world physical execution using the `pyniryo` API, enabling standalone simulation, live interactive testing, and automated pick-and-place routines.
+#### This project provides a complete **Digital Twin and Hardware Control ecosystem** for the **Niryo Ned2** robotic arm. It bridges the gap between visual simulation inside **MuJoCo** and real-world physical execution using the `pyniryo` API, enabling standalone simulation, live interactive testing, and automated pick-and-place routines. The stl files used in this project are from the [Niryo Ned2 GitHub repository](https://github.com/NiryoRobotics/ned2).
 This works in macos and linux environments, but has not been tested on Windows.
 ---
 
@@ -58,7 +58,7 @@ To command the physical Niryo Ned2 robot while seeing it mirrored simultaneously
    ```bash
    python mujocoSimulation.py
     ```
-
+(in macos you may need to run `mjpython mujocoSimulation.py`)
 
 3. **Run the tracking application dashboards (In a separate terminal session):**
 
@@ -70,7 +70,7 @@ To command the physical Niryo Ned2 robot while seeing it mirrored simultaneously
      ```
 
     A visualization of this mode is shown in the following gif:
-    
+
     ![Sim2Real GIF](assets/sim2real.gif)
 
    * For synchronized execution of the physical pick-and-place sequence:
