@@ -52,8 +52,7 @@ Launch the control interface (In a separate terminal session):
 To command the physical Niryo Ned2 robot while seeing it mirrored simultaneously in your digital simulation twin environment:
 
 1. **Network Configuration:**
-   Connect to the hotspot of niryo-ned2.
-
+   Connect to the hotspot of niryo-ned2. **(Password: niryorobot)**
 2. **Boot up the passive simulator viewport:**
    ```bash
    python mujocoSimulation.py
