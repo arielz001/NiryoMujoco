@@ -69,22 +69,19 @@ def send_to_txt(*args):
         label_values[i].config(text=f"{int(deg)}°")
         ui_rad_vals.append(np.radians(deg))
     
-    # ui_rad_vals[4] corresponds to physical Joint 5. Multiply by -1 to invert it in MuJoCo.
     j5_inverted = -ui_rad_vals[4]
     
     mujoco_joints_rad = [
         ui_rad_vals[0],
         ui_rad_vals[1],
         ui_rad_vals[2],
-        j5_inverted,      # Slider J5 (now inverted) controls the Joint of mesh 4 in your XML
-        ui_rad_vals[3],   # Slider J4 controls the Joint of mesh 5 in your XML
+        ui_rad_vals[3], 
+        ui_rad_vals[4],  
         ui_rad_vals[5]
     ]
     
-    # Append the gripper position determined by the buttons to the end of the string
     mujoco_joints_rad.append(current_gripper_val)
     
-    # Write a single comma-separated line for MuJoCo
     line = ",".join([f"{x:.6f}" for x in mujoco_joints_rad])
     try:
         with open(FILENAME, "w") as f:

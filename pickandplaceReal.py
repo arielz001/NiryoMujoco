@@ -105,8 +105,8 @@ def send_to_txt(*args):
         ui_rad_vals[0],
         ui_rad_vals[1],
         ui_rad_vals[2],
-        j5_inverted,      # Inverted physical J5 goes to position 4 in MuJoCo
-        ui_rad_vals[3],   # Physical J4 goes to position 5 in MuJoCo
+        ui_rad_vals[3], 
+        ui_rad_vals[4],  
         ui_rad_vals[5]
     ]
     
