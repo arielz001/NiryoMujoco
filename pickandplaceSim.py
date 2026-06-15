@@ -13,7 +13,7 @@ JOINT_RANGES = [
 
 # --- 2. OPTIMIZED PICK AND PLACE SEQUENCE (Gripper Discrete Values) ---
 # Format: [J1, J2, J3, J4, J5, J6, Gripper]
-# Open Gripper = 0.000  |  Closed Gripper = 0.020 (Corrected for your simulator)
+# Open Gripper = 0.000  |  Closed Gripper = 0.020 
 SEQUENCE = [
     {"desc": "1. Home / Initial Position", "pose": [0, 29, -72, 0, 0, 0, 0.000]},
     

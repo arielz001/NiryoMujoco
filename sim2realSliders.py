@@ -58,7 +58,6 @@ title_lbl.pack(pady=15)
 sliders = []
 label_values = []
 
-# Internal state variable to store gripper opening value (Starts closed at 0.020 per your original fallback)
 current_gripper_val = 0.020
 
 def send_to_txt(*args):
